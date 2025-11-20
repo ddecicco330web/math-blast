@@ -14,7 +14,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 app.use(express.static(join(__dirname, '../public')));
 
 app.get('/', (req, res) => {
-  res.sendFile(join(__dirname, '../public/host.html'));
+  res.sendFile(join(__dirname, '../public/host/host.html'));
 });
 
 io.on('connection', (socket) => {
