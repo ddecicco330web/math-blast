@@ -1,4 +1,4 @@
-export const rooms = new Map();
+const rooms = new Map();
 
 const generateRoomCode = () => {
   let code;
@@ -29,12 +29,10 @@ export const createRoom = () => {
   return roomCode;
 };
 
-const joinRoom = (code, playerName) => {
+export const joinRoom = (code) => {
   const room = rooms.get(code);
   if (!room) return { error: 'Room not found' };
   if (room.state !== 'waiting') return { error: 'Game already started' };
-  if (players.has(playerName)) return { error: 'Player name already exists' };
 
-  room.set(playerName, { name: playerName, id: generateID() });
   return { success: true, room };
 };

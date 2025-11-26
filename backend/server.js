@@ -1,7 +1,7 @@
 import express from 'express';
 import { createServer } from 'node:http';
 import { Server } from 'socket.io';
-import { createRoom, rooms } from './rooms.js';
+import { createRoom, joinRoom } from './rooms.js';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 
@@ -11,10 +11,15 @@ const io = new Server(server);
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-app.use(express.static(join(__dirname, '../public')));
+app.use('/host', express.static(join(__dirname, '../public/host')));
+app.use('/join', express.static(join(__dirname, '../public/join')));
 
 app.get('/', (req, res) => {
   res.sendFile(join(__dirname, '../public/host/host.html'));
+});
+
+app.get('/join', (req, res) => {
+  res.sendFile(join(__dirname, '../public/join/join.html'));
 });
 
 io.on('connection', (socket) => {
@@ -27,6 +32,19 @@ io.on('connection', (socket) => {
     socket.emit('room created', { roomCode: roomCode });
 
     console.log(`Room ${roomCode} created by ${socket.id}`);
+  });
+
+  socket.on('join room', (data) => {
+    const response = joinRoom(data.roomCode);
+
+    if (response.error) {
+      data = response;
+      socket.emit('joined room', response);
+    } else {
+      socket.join(response.room.roomCode);
+      console.log(`${socket.id} joined room ${response.room.roomCode}`);
+      socket.emit('joined room', { id: socket.id });
+    }
   });
 
   socket.on('disconnect', () => {

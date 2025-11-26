@@ -4,13 +4,22 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Math Blast Join Game</title>
+    <link rel="stylesheet" href="join.css" />
   </head>
   <body>
     <h1>Math Blast</h1>
-    <input type="text" placeholder="Enter Code" />
-    <button>Next</button>
+    <input type="text" placeholder="Enter Code" id="room-code" />
+    <button id="connect-button">Connect</button>
+
+    <input
+      type="text"
+      placeholder="Enter Name"
+      id="player-name"
+      class="hidden"
+    />
+    <button id="next-button" class="hidden">Next</button>
   </body>
 
   <script src="/socket.io/socket.io.js"></script>
-  <script src="/host.js"></script>
+  <script src="join.js"></script>
 </html>
