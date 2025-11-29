@@ -1,7 +1,7 @@
 import express from 'express';
 import { createServer } from 'node:http';
 import { Server } from 'socket.io';
-import { createRoom, joinRoom } from './rooms.js';
+import { addPlayer, createRoom, joinRoom, updatePlayerName } from './rooms.js';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 
@@ -24,6 +24,8 @@ app.get('/join', (req, res) => {
 
 io.on('connection', (socket) => {
   console.log('a user connected');
+
+  // Create Room
   socket.on('create room', () => {
     const roomCode = createRoom();
 
@@ -34,19 +36,29 @@ io.on('connection', (socket) => {
     console.log(`Room ${roomCode} created by ${socket.id}`);
   });
 
-  socket.on('join room', (data) => {
+  // Connect to Room
+  socket.on('connect to room', (data) => {
+    console.log(data);
     const response = joinRoom(data.roomCode);
 
     if (response.error) {
       data = response;
-      socket.emit('joined room', response);
+      socket.emit('connected to room', response);
     } else {
       socket.join(response.room.roomCode);
-      console.log(`${socket.id} joined room ${response.room.roomCode}`);
-      socket.emit('joined room', { id: socket.id });
+      addPlayer(socket.id, response.room.roomCode);
+      console.log(`${socket.id} connected to room ${response.room.roomCode}`);
+      socket.emit('connected to room', socket.id);
     }
   });
 
+  // Join Game
+  socket.on('join game', (data) => {
+    const player = updatePlayerName(socket.id, data.name, data.roomCode);
+    socket.emit('joined game', player);
+  });
+
+  // User Disconnects
   socket.on('disconnect', () => {
     console.log('User disconnected:', socket.id);
   });

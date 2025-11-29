@@ -13,15 +13,11 @@ const generateRoomCode = () => {
   return code;
 };
 
-const generateID = () => {
-  return Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
-};
-
 export const createRoom = () => {
   const roomCode = generateRoomCode();
 
   rooms.set(roomCode, {
-    code: roomCode,
+    roomCode: roomCode,
     players: new Map(),
     state: 'waiting'
   });
@@ -29,10 +25,24 @@ export const createRoom = () => {
   return roomCode;
 };
 
-export const joinRoom = (code) => {
-  const room = rooms.get(code);
+export const joinRoom = (roomCode) => {
+  const room = rooms.get(roomCode);
   if (!room) return { error: 'Room not found' };
   if (room.state !== 'waiting') return { error: 'Game already started' };
 
   return { success: true, room };
+};
+
+export const addPlayer = (id, roomCode) => {
+  const room = rooms.get(roomCode);
+  room.players.set(id, { id: id, name: null, score: 0 });
+  console.log(rooms.get(roomCode));
+};
+
+export const updatePlayerName = (id, name, roomCode) => {
+  const player = rooms.get(roomCode)?.players.get(id);
+  player.name = name;
+
+  console.log(rooms.get(roomCode));
+  return player;
 };
