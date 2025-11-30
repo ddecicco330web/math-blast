@@ -11,7 +11,7 @@ const io = new Server(server);
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-app.use('/host', express.static(join(__dirname, '../public/host')));
+app.use('/', express.static(join(__dirname, '../public/host')));
 app.use('/join', express.static(join(__dirname, '../public/join')));
 
 app.get('/', (req, res) => {
@@ -55,7 +55,7 @@ io.on('connection', (socket) => {
   // Join Game
   socket.on('join game', (data) => {
     const player = updatePlayerName(socket.id, data.name, data.roomCode);
-    socket.emit('joined game', player);
+    io.emit('joined game', player);
   });
 
   // User Disconnects

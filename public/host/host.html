@@ -4,12 +4,15 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Math Blast Host Game</title>
+    <link rel="stylesheet" href="host.css" />
   </head>
   <body>
     <h1>Math Blast</h1>
     <button id="host-button">Host Game</button>
+    <p id="room-code" class="hidden"></p>
+    <ul id="player-list" class="hidden"></ul>
   </body>
 
   <script src="/socket.io/socket.io.js"></script>
-  <script src="host/host.js"></script>
+  <script src="host.js"></script>
 </html>

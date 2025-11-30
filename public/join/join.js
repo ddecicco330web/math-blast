@@ -6,6 +6,8 @@ const connectButton = document.getElementById('connect-button');
 const nameInput = document.getElementById('player-name');
 const joinButton = document.getElementById('join-button');
 
+const waitingText = document.getElementById('waiting-text');
+
 let roomCode = null;
 
 // Send Events
@@ -35,4 +37,12 @@ socket.on('connected to room', (data) => {
   connectButton.classList.add('hidden');
   nameInput.classList.remove('hidden');
   joinButton.classList.remove('hidden');
+});
+
+socket.on('joined game', (player) => {
+  if (player.id != socket.id) return;
+  // Show waiting text
+  nameInput.classList.add('hidden');
+  joinButton.classList.add('hidden');
+  waitingText.classList.remove('hidden');
 });
