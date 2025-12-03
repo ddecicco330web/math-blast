@@ -1,7 +1,13 @@
 import express from 'express';
 import { createServer } from 'node:http';
 import { Server } from 'socket.io';
-import { addPlayer, createRoom, joinRoom, updatePlayerName } from './rooms.js';
+import {
+  addPlayer,
+  createRoom,
+  joinRoom,
+  removePlayer,
+  updatePlayerName
+} from './rooms.js';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 
@@ -58,9 +64,16 @@ io.on('connection', (socket) => {
     io.emit('joined game', player);
   });
 
+  // Remove Player
+  socket.on('remove player', (data) => {
+    console.log(data);
+    removePlayer(data.id, data.roomCode);
+  });
+
   // User Disconnects
   socket.on('disconnect', () => {
     console.log('User disconnected:', socket.id);
+    io.emit('disconnected', socket.id);
   });
 });
 

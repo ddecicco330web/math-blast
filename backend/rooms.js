@@ -39,6 +39,14 @@ export const addPlayer = (id, roomCode) => {
   console.log(rooms.get(roomCode));
 };
 
+export const removePlayer = (id, roomCode) => {
+  console.log(roomCode);
+  const room = rooms.get(roomCode);
+  console.log(room);
+  room.players.delete(id);
+  console.log(rooms.get(roomCode));
+};
+
 export const updatePlayerName = (id, name, roomCode) => {
   const player = rooms.get(roomCode)?.players.get(id);
   player.name = name;

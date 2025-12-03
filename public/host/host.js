@@ -1,8 +1,12 @@
 const socket = io();
 
 const hostButton = document.getElementById('host-button');
-const roomCode = document.getElementById('room-code');
+const roomCodeText = document.getElementById('room-code');
 const playerList = document.getElementById('player-list');
+
+const playerListMap = new Map();
+
+let roomCode;
 
 const hostGame = () => {
   socket.emit('create room');
@@ -15,12 +19,22 @@ socket.on('room created', (data) => {
 
   // Show code and player list
   hostButton.classList.add('hidden');
-  roomCode.innerText = data.roomCode;
-  roomCode.classList.remove('hidden');
+  roomCodeText.innerText = data.roomCode;
+  roomCode = data.roomCode;
+  roomCodeText.classList.remove('hidden');
   playerList.classList.remove('hidden');
 });
 
 socket.on('joined game', (player) => {
   console.log(`Host: Add player ${player}`);
-  playerList.innerHTML += `<li>${player.name}</li>`;
+  playerListMap.set(player.id, `<li>${player.name}</li>`);
+  playerList.innerHTML = Array.from(playerListMap.values()).join(' ');
+});
+
+socket.on('disconnected', (id) => {
+  if (!playerListMap.has(id)) return;
+
+  socket.emit('remove player', { id, roomCode });
+  playerListMap.delete(id);
+  playerList.innerHTML = Array.from(playerListMap.values()).join(' ');
 });
