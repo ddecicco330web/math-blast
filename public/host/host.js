@@ -32,8 +32,6 @@ socket.on('joined game', (player) => {
 });
 
 socket.on('disconnected', (id) => {
-  if (!playerListMap.has(id)) return;
-
   socket.emit('remove player', { id, roomCode });
   playerListMap.delete(id);
   playerList.innerHTML = Array.from(playerListMap.values()).join(' ');

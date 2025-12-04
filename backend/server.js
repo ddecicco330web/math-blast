@@ -52,6 +52,7 @@ io.on('connection', (socket) => {
       socket.emit('connected to room', response);
     } else {
       socket.join(response.room.roomCode);
+      socket.roomId = response.room.roomCode;
       addPlayer(socket.id, response.room.roomCode);
       console.log(`${socket.id} connected to room ${response.room.roomCode}`);
       socket.emit('connected to room', socket.id);
@@ -61,7 +62,7 @@ io.on('connection', (socket) => {
   // Join Game
   socket.on('join game', (data) => {
     const player = updatePlayerName(socket.id, data.name, data.roomCode);
-    io.emit('joined game', player);
+    io.to(data.roomCode).emit('joined game', player);
   });
 
   // Remove Player
@@ -73,7 +74,7 @@ io.on('connection', (socket) => {
   // User Disconnects
   socket.on('disconnect', () => {
     console.log('User disconnected:', socket.id);
-    io.emit('disconnected', socket.id);
+    io.to(socket.roomId).emit('disconnected', socket.id);
   });
 });
 
