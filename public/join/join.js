@@ -46,3 +46,15 @@ socket.on('joined game', (player) => {
   joinButton.classList.add('hidden');
   waitingText.classList.remove('hidden');
 });
+
+socket.on('host disconnected', () => {
+  alert('Host disconnected');
+
+  // Reset
+  nameInput.classList.add('hidden');
+  joinButton.classList.add('hidden');
+  waitingText.classList.add('hidden');
+  codeInput.classList.remove('hidden');
+  connectButton.classList.remove('hidden');
+  codeInput.value = '';
+});

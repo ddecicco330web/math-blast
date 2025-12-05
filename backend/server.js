@@ -36,6 +36,8 @@ io.on('connection', (socket) => {
     const roomCode = createRoom();
 
     socket.join(roomCode);
+    socket.roomId = roomCode;
+    socket.role = 'host';
 
     socket.emit('room created', { roomCode: roomCode });
 
@@ -75,6 +77,8 @@ io.on('connection', (socket) => {
   socket.on('disconnect', () => {
     console.log('User disconnected:', socket.id);
     io.to(socket.roomId).emit('disconnected', socket.id);
+
+    if (socket.role === 'host') io.to(socket.roomId).emit('host disconnected');
   });
 });
 
