@@ -1,4 +1,5 @@
 const rooms = new Map();
+const MAX_PLAYERS = 30;
 
 const generateRoomCode = () => {
   let code;
@@ -19,6 +20,7 @@ export const createRoom = () => {
   rooms.set(roomCode, {
     roomCode: roomCode,
     players: new Map(),
+    names: new Set(),
     state: 'waiting'
   });
 
@@ -28,6 +30,7 @@ export const createRoom = () => {
 export const joinRoom = (roomCode) => {
   const room = rooms.get(roomCode);
   if (!room) return { error: 'Room not found' };
+  if (room.players.size >= 30) return { error: 'Max players reached' };
   if (room.state !== 'waiting') return { error: 'Game already started' };
 
   return { success: true, room };
@@ -35,6 +38,7 @@ export const joinRoom = (roomCode) => {
 
 export const addPlayer = (id, roomCode) => {
   const room = rooms.get(roomCode);
+  if (room.players.size >= MAX_PLAYERS) return { error: 'Max players reached' };
   room.players.set(id, { id: id, name: null, score: 0 });
   console.log(rooms.get(roomCode));
 };
@@ -48,8 +52,14 @@ export const removePlayer = (id, roomCode) => {
 };
 
 export const updatePlayerName = (id, name, roomCode) => {
+  name = name.trim();
+  if (!name) return { error: 'Enter a name' };
+  if (rooms.get(roomCode)?.names.has(name)) return { error: 'Name is taken' };
+
   const player = rooms.get(roomCode)?.players.get(id);
   player.name = name;
+
+  rooms.get(roomCode)?.names.add(name);
 
   console.log(rooms.get(roomCode));
   return player;

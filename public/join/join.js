@@ -47,6 +47,10 @@ socket.on('joined game', (player) => {
   waitingText.classList.remove('hidden');
 });
 
+socket.on('failed to join', (error) => {
+  alert(error);
+});
+
 socket.on('host disconnected', () => {
   alert('Host disconnected');
 

@@ -50,7 +50,6 @@ io.on('connection', (socket) => {
     const response = joinRoom(data.roomCode);
 
     if (response.error) {
-      data = response;
       socket.emit('connected to room', response);
     } else {
       socket.join(response.room.roomCode);
@@ -63,8 +62,14 @@ io.on('connection', (socket) => {
 
   // Join Game
   socket.on('join game', (data) => {
-    const player = updatePlayerName(socket.id, data.name, data.roomCode);
-    io.to(data.roomCode).emit('joined game', player);
+    const response = updatePlayerName(socket.id, data.name, data.roomCode);
+
+    if (response.error) {
+      socket.emit('failed to join', response.error);
+      return;
+    }
+
+    io.to(data.roomCode).emit('joined game', response);
   });
 
   // Remove Player
