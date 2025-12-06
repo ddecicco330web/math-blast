@@ -7,6 +7,7 @@ const nameInput = document.getElementById('player-name');
 const joinButton = document.getElementById('join-button');
 
 const waitingText = document.getElementById('waiting-text');
+const startingText = document.getElementById('starting-text');
 
 let roomCode = null;
 
@@ -49,6 +50,14 @@ socket.on('joined game', (player) => {
 
 socket.on('failed to join', (error) => {
   alert(error);
+
+  // Reset
+  nameInput.classList.add('hidden');
+  joinButton.classList.add('hidden');
+  waitingText.classList.add('hidden');
+  codeInput.classList.remove('hidden');
+  connectButton.classList.remove('hidden');
+  codeInput.value = '';
 });
 
 socket.on('host disconnected', () => {
@@ -61,4 +70,9 @@ socket.on('host disconnected', () => {
   codeInput.classList.remove('hidden');
   connectButton.classList.remove('hidden');
   codeInput.value = '';
+});
+
+socket.on('game started', () => {
+  waitingText.classList.add('hidden');
+  startingText.classList.remove('hidden');
 });

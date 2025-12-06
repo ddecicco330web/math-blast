@@ -27,7 +27,7 @@ export const createRoom = () => {
   return roomCode;
 };
 
-export const joinRoom = (roomCode) => {
+export const findRoom = (roomCode) => {
   const room = rooms.get(roomCode);
   if (!room) return { error: 'Room not found' };
   if (room.players.size >= 30) return { error: 'Max players reached' };
@@ -36,22 +36,7 @@ export const joinRoom = (roomCode) => {
   return { success: true, room };
 };
 
-export const addPlayer = (id, roomCode) => {
-  const room = rooms.get(roomCode);
-  if (room.players.size >= MAX_PLAYERS) return { error: 'Max players reached' };
-  room.players.set(id, { id: id, name: null, score: 0 });
-  console.log(rooms.get(roomCode));
-};
-
-export const removePlayer = (id, roomCode) => {
-  console.log(roomCode);
-  const room = rooms.get(roomCode);
-  console.log(room);
-  room.players.delete(id);
-  console.log(rooms.get(roomCode));
-};
-
-export const updatePlayerName = (id, name, roomCode) => {
+const updatePlayerName = (id, name, roomCode) => {
   name = name.trim();
   if (!name) return { error: 'Enter a name' };
   if (rooms.get(roomCode)?.names.has(name)) return { error: 'Name is taken' };
@@ -63,4 +48,28 @@ export const updatePlayerName = (id, name, roomCode) => {
 
   console.log(rooms.get(roomCode));
   return player;
+};
+
+export const addPlayer = (id, name, roomCode) => {
+  const room = rooms.get(roomCode);
+  if (room.players.size >= MAX_PLAYERS) return { error: 'Max players reached' };
+  if (room.state !== 'waiting') return { error: 'Game already started' };
+  room.players.set(id, { id: id, name: null, score: 0 });
+  console.log(rooms.get(roomCode));
+
+  return updatePlayerName(id, name, roomCode);
+};
+
+export const removePlayer = (id, roomCode) => {
+  console.log(roomCode);
+  const room = rooms.get(roomCode);
+  console.log(room);
+
+  room.names.delete(room.players.get(id).name);
+  console.log(rooms.get(roomCode));
+};
+
+export const startGame = (roomCode) => {
+  const room = rooms.get(roomCode);
+  room.state = 'started';
 };

@@ -4,9 +4,9 @@ import { Server } from 'socket.io';
 import {
   addPlayer,
   createRoom,
-  joinRoom,
+  findRoom,
   removePlayer,
-  updatePlayerName
+  startGame
 } from './rooms.js';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
@@ -47,14 +47,12 @@ io.on('connection', (socket) => {
   // Connect to Room
   socket.on('connect to room', (data) => {
     console.log(data);
-    const response = joinRoom(data.roomCode);
+    const response = findRoom(data.roomCode);
 
     if (response.error) {
       socket.emit('connected to room', response);
     } else {
-      socket.join(response.room.roomCode);
-      socket.roomId = response.room.roomCode;
-      addPlayer(socket.id, response.room.roomCode);
+      socket.roomId = data.roomCode;
       console.log(`${socket.id} connected to room ${response.room.roomCode}`);
       socket.emit('connected to room', socket.id);
     }
@@ -62,13 +60,14 @@ io.on('connection', (socket) => {
 
   // Join Game
   socket.on('join game', (data) => {
-    const response = updatePlayerName(socket.id, data.name, data.roomCode);
+    const response = addPlayer(socket.id, data.name, data.roomCode);
 
     if (response.error) {
       socket.emit('failed to join', response.error);
       return;
     }
 
+    socket.join(data.roomCode);
     io.to(data.roomCode).emit('joined game', response);
   });
 
@@ -76,6 +75,12 @@ io.on('connection', (socket) => {
   socket.on('remove player', (data) => {
     console.log(data);
     removePlayer(data.id, data.roomCode);
+  });
+
+  // Start Game
+  socket.on('start game', (roomCode) => {
+    startGame(roomCode);
+    io.to(roomCode).emit('game started');
   });
 
   // User Disconnects
