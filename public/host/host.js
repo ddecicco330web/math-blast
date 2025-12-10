@@ -6,6 +6,8 @@ const playerList = document.getElementById('player-list');
 const playerCount = document.getElementById('player-count');
 const startButton = document.getElementById('start-button');
 const startingText = document.getElementById('starting-text');
+const defaultNamesCheckbox = document.getElementById('default-names-checkbox');
+const defaultNamesLabel = document.getElementById('default-names-label');
 
 const playerListMap = new Map();
 
@@ -23,10 +25,21 @@ const startGame = () => {
   playerList.classList.add('hidden');
   playerCount.classList.add('hidden');
   startButton.classList.add('hidden');
+  defaultNamesCheckbox.classList.add('hidden');
+  defaultNamesLabel.classList.add('hidden');
   startingText.classList.remove('hidden');
 };
 
 startButton.onclick = startGame;
+
+defaultNamesCheckbox.addEventListener('change', function () {
+  if (this.checked) {
+    console.log('enable default names');
+    socket.emit('set default names', { value: true, roomCode: roomCode });
+  } else {
+    socket.emit('set default names', { value: false, roomCode: roomCode });
+  }
+});
 
 socket.on('room created', (data) => {
   alert(`Room Code: ${data.roomCode}`);
@@ -39,6 +52,8 @@ socket.on('room created', (data) => {
   playerList.classList.remove('hidden');
   playerCount.classList.remove('hidden');
   playerCount.innerText = '0/30';
+  defaultNamesCheckbox.classList.remove('hidden');
+  defaultNamesLabel.classList.remove('hidden');
 });
 
 socket.on('joined game', (player) => {

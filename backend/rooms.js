@@ -21,7 +21,8 @@ export const createRoom = () => {
     roomCode: roomCode,
     players: new Map(),
     names: new Set(),
-    state: 'waiting'
+    state: 'waiting',
+    defaultNames: false
   });
 
   return roomCode;
@@ -65,11 +66,16 @@ export const removePlayer = (id, roomCode) => {
   const room = rooms.get(roomCode);
   console.log(room);
 
-  room.names.delete(room.players.get(id).name);
+  if (room.players.has(id)) room.names.delete(room.players.get(id).name);
   console.log(rooms.get(roomCode));
 };
 
 export const startGame = (roomCode) => {
   const room = rooms.get(roomCode);
   room.state = 'started';
+};
+
+export const setDefaultNames = (value, roomCode) => {
+  rooms.get(roomCode).defaultNames = value;
+  console.log(rooms.get(roomCode));
 };

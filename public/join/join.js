@@ -1,3 +1,5 @@
+import { generateName } from '../names.js';
+
 const socket = io();
 
 const codeInput = document.getElementById('room-code');
@@ -38,6 +40,11 @@ socket.on('connected to room', (data) => {
   connectButton.classList.add('hidden');
   nameInput.classList.remove('hidden');
   joinButton.classList.remove('hidden');
+
+  if (data.defaultNames) {
+    nameInput.value = generateName();
+    nameInput.disabled = true;
+  }
 });
 
 socket.on('joined game', (player) => {

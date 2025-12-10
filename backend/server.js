@@ -6,6 +6,7 @@ import {
   createRoom,
   findRoom,
   removePlayer,
+  setDefaultNames,
   startGame
 } from './rooms.js';
 import { fileURLToPath } from 'node:url';
@@ -17,10 +18,11 @@ const io = new Server(server);
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-app.use('/', express.static(join(__dirname, '../public/host')));
+app.use(express.static('public'));
+app.use('/host', express.static(join(__dirname, '../public/host')));
 app.use('/join', express.static(join(__dirname, '../public/join')));
 
-app.get('/', (req, res) => {
+app.get('/host', (req, res) => {
   res.sendFile(join(__dirname, '../public/host/host.html'));
 });
 
@@ -54,7 +56,9 @@ io.on('connection', (socket) => {
     } else {
       socket.roomId = data.roomCode;
       console.log(`${socket.id} connected to room ${response.room.roomCode}`);
-      socket.emit('connected to room', socket.id);
+      socket.emit('connected to room', {
+        defaultNames: response.room.defaultNames
+      });
     }
   });
 
@@ -81,6 +85,11 @@ io.on('connection', (socket) => {
   socket.on('start game', (roomCode) => {
     startGame(roomCode);
     io.to(roomCode).emit('game started');
+  });
+
+  // Enable Default Names
+  socket.on('set default names', (data) => {
+    setDefaultNames(data.value, data.roomCode);
   });
 
   // User Disconnects
