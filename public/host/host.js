@@ -8,6 +8,7 @@ const startButton = document.getElementById('start-button');
 const startingText = document.getElementById('starting-text');
 const defaultNamesCheckbox = document.getElementById('default-names-checkbox');
 const defaultNamesLabel = document.getElementById('default-names-label');
+const qrCodeImage = document.getElementById('qr-code-image');
 
 const playerListMap = new Map();
 
@@ -27,6 +28,7 @@ const startGame = () => {
   startButton.classList.add('hidden');
   defaultNamesCheckbox.classList.add('hidden');
   defaultNamesLabel.classList.add('hidden');
+  qrCodeImage.classList.add('hidden');
   startingText.classList.remove('hidden');
 };
 
@@ -54,6 +56,11 @@ socket.on('room created', (data) => {
   playerCount.innerText = '0/30';
   defaultNamesCheckbox.classList.remove('hidden');
   defaultNamesLabel.classList.remove('hidden');
+  qrCodeImage.classList.remove('hidden');
+
+  QRCode.toDataURL('localhost:3000/join').then((dataURL) => {
+    qrCodeImage.src = dataURL;
+  });
 });
 
 socket.on('joined game', (player) => {
