@@ -21,7 +21,10 @@ const hostGame = () => {
 hostButton.onclick = hostGame;
 
 const startGame = () => {
+  // Send signal to backend
   socket.emit('start game', roomCode);
+
+  // Hide elements
   roomCodeText.classList.add('hidden');
   playerList.classList.add('hidden');
   playerCount.classList.add('hidden');
@@ -29,6 +32,8 @@ const startGame = () => {
   defaultNamesCheckbox.classList.add('hidden');
   defaultNamesLabel.classList.add('hidden');
   qrCodeImage.classList.add('hidden');
+
+  // Show elements
   startingText.classList.remove('hidden');
 };
 
@@ -46,8 +51,10 @@ defaultNamesCheckbox.addEventListener('change', function () {
 socket.on('room created', (data) => {
   alert(`Room Code: ${data.roomCode}`);
 
-  // Show code, player list, and player count
+  // Hide elements
   hostButton.classList.add('hidden');
+
+  // Show elements
   roomCodeText.innerText = data.roomCode;
   roomCode = data.roomCode;
   roomCodeText.classList.remove('hidden');
@@ -58,7 +65,8 @@ socket.on('room created', (data) => {
   defaultNamesLabel.classList.remove('hidden');
   qrCodeImage.classList.remove('hidden');
 
-  QRCode.toDataURL('localhost:3000/join').then((dataURL) => {
+  // Generate QR code
+  QRCode.toDataURL(`localhost:3000/join?room=${roomCode}`).then((dataURL) => {
     qrCodeImage.src = dataURL;
   });
 });

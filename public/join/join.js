@@ -2,21 +2,27 @@ import { generateName } from '../names.js';
 
 const socket = io();
 
+// Get HTML Elements
 const codeInput = document.getElementById('room-code');
 const connectButton = document.getElementById('connect-button');
-
 const nameInput = document.getElementById('player-name');
 const joinButton = document.getElementById('join-button');
-
 const waitingText = document.getElementById('waiting-text');
 const startingText = document.getElementById('starting-text');
 
-let roomCode = null;
+// Extract Room Code from URL
+const urlParams = new URLSearchParams(window.location.search);
+let roomCode = urlParams.get('room');
+console.log(roomCode);
 
 // Send Events
 const connectToRoom = () => {
   socket.emit('connect to room', { roomCode: codeInput.value });
 };
+
+codeInput.value = roomCode;
+
+if (roomCode) connectToRoom();
 
 connectButton.onclick = connectToRoom;
 
