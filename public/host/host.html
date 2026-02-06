@@ -4,12 +4,29 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Math Blast Host Game</title>
+    <link rel="stylesheet" href="host.css" />
   </head>
   <body>
     <h1>Math Blast</h1>
     <button id="host-button">Host Game</button>
+    <p id="room-code" class="hidden"></p>
+    <img id="qr-code-image" class="hidden" />
+    <input type="checkbox" id="default-names-checkbox" class="hidden" />
+    <label for="default-names" class="hidden" id="default-names-label"
+      >Default Names</label
+    >
+    <p id="player-count" class="hidden"></p>
+    <ul id="player-list" class="hidden"></ul>
+    <button id="start-button" class="hidden">Start</button>
+    <p id="starting-text" class="hidden">Game Started</p>
   </body>
 
   <script src="/socket.io/socket.io.js"></script>
-  <script src="/host.js"></script>
+  <script
+    src="https://cdnjs.cloudflare.com/ajax/libs/qrcode/1.4.4/qrcode.min.js"
+    integrity="sha512-6x997BOv0e4O+G45Cwr4PZMYXP0ATChLcSob5IB6DPpXvDfRDMBFClXOg5ahmIVBoAf2tnsENpkHRJckceZiwQ=="
+    crossorigin="anonymous"
+    referrerpolicy="no-referrer"
+  ></script>
+  <script type="module" src="host.js"></script>
 </html>
