@@ -12,17 +12,6 @@ let roomCode;
 //     socket.emit('set default names', { value: false, roomCode: roomCode });
 //   }
 // });
-export function setupSocketEvents(socket) {
-  socket.on('room created', (data) => {
-    alert(`Room Code: ${data.roomCode}`);
-
-    updateState({ loading: false, roomCode: data.roomCode });
-    // Generate QR code
-    // QRCode.toDataURL(`localhost:3000/join?room=${roomCode}`).then((dataURL) => {
-    //   qrCodeImage.src = dataURL;
-    // });
-  });
-}
 
 // socket.on('joined game', (player) => {
 //   console.log(`Host: Add player ${player}`);
