@@ -13,8 +13,8 @@ export function getLobbyPage() {
     <input type="checkbox" id="default-names-checkbox" />
     <label for="default-names" id="default-names-label">Default Names</label>
     <p id="player-count"></p>
-    <ul id="player-list"></ul>
-    <button id="start-button">Start</button>`;
+    <ul id="player-list">${state.playerListMap.size ? state.playerListMap.forEach((player) => player) : ''}</ul>
+    <button id="start-button" ${state.playerListMap.size ? '' : `class="hidden"`}>Start</button>`;
 }
 
 export function getGamePage() {

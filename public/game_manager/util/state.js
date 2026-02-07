@@ -5,7 +5,8 @@ export const state = {
   socket: null,
   isLoading: false,
   roomCode: null,
-  qrCodeSrc: null
+  qrCodeSrc: null,
+  playerListMap: new Map()
 };
 
 // Update state and refresh view
@@ -16,7 +17,7 @@ export function updateState(args) {
 }
 
 // Render content based on state
-function renderContent() {
+export function renderContent() {
   const appDiv = document.getElementById('app');
 
   if (state.isLoading) {

@@ -1,5 +1,5 @@
 import { handleRoute } from './util/router.js';
-import { state, updateState } from './util/state.js';
+import { renderContent, state, updateState } from './util/state.js';
 
 // Add event listeners
 export function setupEventListeners() {
@@ -7,6 +7,7 @@ export function setupEventListeners() {
   window.addEventListener('hashchange', handleRoute);
   window.addEventListener('load', handleRoute);
 
+  // Listen for UI events
   document.getElementById('app').addEventListener('click', function (event) {
     if (event.target.matches('#host-button')) {
       state.socket.emit('create room');
@@ -18,11 +19,38 @@ export function setupEventListeners() {
       state.socket.emit('start game', roomCode);
     }
   });
+
+  document.getElementById('app').addEventListener('change', function (event) {
+    if (!event.target.matches('#default-names-checkbox')) return;
+
+    console.log('enable default names');
+    state.socket.emit('set default names', {
+      value: event.target.checked,
+      roomCode: state.roomCode
+    });
+  });
 }
 
 export function setupSocketEvents() {
   state.socket.on('room created', (data) => {
-    updateState({ loading: false, roomCode: data.roomCode });
+    updateState({ key: 'roomCode', value: data.roomCode });
+  });
+
+  state.socket.on('joined game', (player) => {
+    console.log(`Host: Add player ${player}`);
+    updateState({
+      key: 'playerListMap',
+      value: playerListMap.set(player.id, `<li>${player.name}</li>`)
+    });
+    playerList.innerHTML = Array.from(state.playerListMap.values()).join(' ');
+    playerCount.innerText = `${state.playerListMap.size}/30`;
+    startButton.classList.remove('hidden');
+  });
+
+  state.socket.on('disconnected', (id) => {
+    state.socket.emit('remove player', { id, roomCode });
+    state.playerListMap.delete(id);
+    renderContent();
   });
 }
 
@@ -32,9 +60,5 @@ async function getQRCodeSrc() {
     `localhost:3000/join?room=${state.roomCode}`
   );
 
-  updateState({
-    isLoading: false,
-    roomCode: state.roomCode,
-    qrCodeSrc: qrCodeSrc
-  });
+  updateState({ key: 'qrCodeSrc', value: qrCodeSrc });
 }
