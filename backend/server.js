@@ -19,15 +19,15 @@ const io = new Server(server);
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 app.use(express.static('public'));
-app.use('/host', express.static(join(__dirname, '../public/host')));
-app.use('/join', express.static(join(__dirname, '../public/join')));
+app.use('/game', express.static(join(__dirname, '../public/game_manager')));
+app.use('/player', express.static(join(__dirname, '../public/player')));
 
-app.get('/host', (req, res) => {
-  res.sendFile(join(__dirname, '../public/host/host.html'));
+app.get('/game', (req, res) => {
+  res.sendFile(join(__dirname, '../public/game_manager/game_manager.html'));
 });
 
-app.get('/join', (req, res) => {
-  res.sendFile(join(__dirname, '../public/join/join.html'));
+app.get('/player', (req, res) => {
+  res.sendFile(join(__dirname, '../public/player/player.html'));
 });
 
 io.on('connection', (socket) => {
