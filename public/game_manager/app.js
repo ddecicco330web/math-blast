@@ -9,14 +9,16 @@ routes.set('#/host', getHostPage);
 routes.set('#/lobby', getLobbyPage);
 routes.set('#/game', getGamePage);
 
-// Set State
-state.set('socket', null);
-state.set('isLoading', false);
-state.set('roomCode', null);
-state.set('qrCodeSrc', null);
-state.set('playerListMap', new Map());
-
 const socket = io();
-updateState({ key: 'socket', value: socket });
+console.log(socket);
+
+const initState = {
+  socket: socket,
+  isLoading: false,
+  roomCode: null,
+  playerListMap: new Map()
+};
+
+updateState(initState);
 setupEventListeners();
 setupSocketEvents();

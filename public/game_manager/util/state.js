@@ -1,17 +1,18 @@
 import { routes } from './router.js';
 
 // Define state object
-export const state = new Map();
+export const state = {};
 
 // Update state and refresh view
-export function updateState(args) {
-  if (args.key) state.set(args.key, args.value);
-  else Object.assign(state, args);
+export const updateState = (changes) => {
+  console.log(state);
+  Object.assign(state, changes);
+  console.log(state);
   renderContent();
-}
+};
 
 // Render content based on state
-export function renderContent() {
+export const renderContent = () => {
   const appDiv = document.getElementById('app');
 
   if (state.isLoading) {
@@ -20,4 +21,4 @@ export function renderContent() {
   }
 
   appDiv.innerHTML = routes.get(window.location.hash || '#/')();
-}
+};

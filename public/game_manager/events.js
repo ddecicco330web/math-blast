@@ -1,61 +1,55 @@
 import { renderContent, state, updateState } from './util/state.js';
 
 // Add event listeners
-export function setupEventListeners() {
+export const setupEventListeners = () => {
   // Listen for UI events
-  document.getElementById('app').addEventListener('click', function (event) {
+  document.getElementById('app').addEventListener('click', (event) => {
     if (event.target.matches('#host-button')) {
-      state.get('socket').emit('create room');
+      state.socket.emit('create room');
       window.location.hash = '/lobby';
       getQRCodeSrc();
     }
 
     if (event.target.matches('#start-button')) {
-      state.get('socket').emit('start game', roomCode);
+      state.socket.emit('start game', roomCode);
     }
   });
 
-  document.getElementById('app').addEventListener('change', function (event) {
+  document.getElementById('app').addEventListener('change', (event) => {
     if (!event.target.matches('#default-names-checkbox')) return;
 
     console.log('enable default names');
-    state.get('socket').emit('set default names', {
+    state.socket.emit('set default names', {
       value: event.target.checked,
-      roomCode: state.get('roomCode')
+      roomCode: state.roomCode
     });
   });
-}
+};
 
-export function setupSocketEvents() {
-  state.get('socket').on('room created', (data) => {
-    updateState({ key: 'roomCode', value: data.roomCode });
+export const setupSocketEvents = () => {
+  state.socket.on('room created', (data) => {
+    updateState({ roomCode: data.roomCode });
   });
 
-  state.get('socket').on('joined game', (player) => {
+  state.socket.on('joined game', (player) => {
     console.log(`Host: Add player ${player}`);
-    updateState({
-      key: 'playerListMap',
-      value: playerListMap.set(player.id, `<li>${player.name}</li>`)
-    });
-    playerList.innerHTML = Array.from(state.get('playerListMap').values()).join(
-      ' '
-    );
-    playerCount.innerText = `${state.get('playerListMap').size}/30`;
-    startButton.classList.remove('hidden');
-  });
 
-  state.get('socket').on('disconnected', (id) => {
-    state.get('socket').emit('remove player', { id, roomCode });
-    state.get('playerListMap').delete(id);
+    state.playerListMap.set(player.id, `<li>${player.name}</li>`);
     renderContent();
   });
-}
 
-async function getQRCodeSrc() {
+  state.socket.on('disconnected', (id) => {
+    state.socket.emit('remove player', { id, roomCode });
+    state.playerListMap.delete(id);
+    renderContent();
+  });
+};
+
+const getQRCodeSrc = async () => {
   // Generate QR code
   const qrCodeSrc = await QRCode.toDataURL(
-    `localhost:3000/join?room=${state.get('roomCode')}`
+    `localhost:3000/join?room=${state.roomCode}`
   );
 
-  updateState({ key: 'qrCodeSrc', value: qrCodeSrc });
-}
+  updateState({ qrCodeSrc: qrCodeSrc });
+};
