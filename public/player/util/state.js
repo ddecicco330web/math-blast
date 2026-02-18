@@ -1,17 +1,26 @@
 import { routes } from './router.js';
 
 // Define state object
-export const state = new Map();
+export const state = {};
+const initState = {};
+
+export const initializeState = (init) => {
+  Object.assign(initState, init);
+  Object.assign(state, initState);
+};
+
+export const resetState = () => {
+  Object.assign(state, initState);
+};
 
 // Update state and refresh view
-export function updateState(args) {
-  if (args.key) state.set(args.key, args.value);
-  else Object.assign(state, args);
+export const updateState = (changes) => {
+  Object.assign(state, changes);
   renderContent();
-}
+};
 
 // Render content based on state
-export function renderContent() {
+export const renderContent = () => {
   const appDiv = document.getElementById('app');
 
   if (state.isLoading) {
@@ -20,4 +29,4 @@ export function renderContent() {
   }
 
   appDiv.innerHTML = routes.get(window.location.hash || '#/')();
-}
+};
