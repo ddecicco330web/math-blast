@@ -39,7 +39,7 @@ export const setupSocketEvents = () => {
   });
 
   state.socket.on('disconnected', (id) => {
-    state.socket.emit('remove player', { id, roomCode });
+    state.socket.emit('remove player', { id, roomCode: state.roomCode });
     state.playerListMap.delete(id);
     renderContent();
   });

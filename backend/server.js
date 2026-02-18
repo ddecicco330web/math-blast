@@ -57,7 +57,8 @@ io.on('connection', (socket) => {
       socket.roomId = data.roomCode;
       console.log(`${socket.id} connected to room ${response.room.roomCode}`);
       socket.emit('connected to room', {
-        defaultNames: response.room.defaultNames
+        defaultNames: response.room.defaultNames,
+        roomCode: data.roomCode
       });
     }
   });

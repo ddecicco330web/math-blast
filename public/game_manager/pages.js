@@ -7,13 +7,15 @@ export const getHostPage = () => {
 };
 
 export const getLobbyPage = () => {
+  let playerListString = '';
+  state.playerListMap.forEach((player) => (playerListString += player));
   return `<h1>Math Blast</h1>
     <p id="room-code">${state.roomCode ? state.roomCode : 'Loading...'}</p>
     ${state.qrCodeSrc ? `<img id="qr-code-image" src=${state.qrCodeSrc} />` : ''}
     <input type="checkbox" id="default-names-checkbox" />
     <label for="default-names" id="default-names-label">Default Names</label>
-    <p id="player-count">0/30</p>
-    <ul id="player-list">${state.playerListMap.size ? state.playerListMap.forEach((player) => player) : ''}</ul>
+    <p id="player-count">${state.playerListMap.size}/30</p>
+    <ul id="player-list">${playerListString}</ul>
     <button id="start-button" ${state.playerListMap.size ? '' : `class="hidden"`}>Start</button>`;
 };
 

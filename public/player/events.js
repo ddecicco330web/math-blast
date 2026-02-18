@@ -2,6 +2,7 @@ import { generateName } from '../names.js';
 import { resetState, state, updateState } from './util/state.js';
 
 export const connectToRoom = (roomCode) => {
+  console.log(roomCode);
   state.socket.emit('connect to room', {
     roomCode: roomCode
   });
@@ -37,8 +38,11 @@ export const setupSocketEvents = () => {
       defaultName = true;
     }
 
+    console.log(playerName, defaultName);
+
+    console.log(data);
     updateState({
-      roomCode: document.getElementById('room-code').value,
+      roomCode: data.roomCode,
       playerName: playerName,
       defaultName: defaultName
     });

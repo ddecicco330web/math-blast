@@ -1,13 +1,15 @@
 import { connectToRoom } from './events.js';
+import { state } from './util/state.js';
 
 export const getRoomCodePage = () => {
-  // Extract Room Code from URL
-  const urlParams = new URLSearchParams(window.location.search);
-  let roomCode = urlParams.get('room');
+  if (!state.roomCode) {
+    // Extract Room Code from URL
+    const urlParams = new URLSearchParams(window.location.search);
+    let roomCode = urlParams.get('room');
 
-  if (roomCode) {
-    connectToRoom(roomCode);
-    return;
+    if (roomCode) {
+      connectToRoom(roomCode);
+    }
   }
 
   return `<h1>Math Blast</h1>
@@ -16,11 +18,14 @@ export const getRoomCodePage = () => {
 };
 
 export const getNamePage = () => {
+  console.log(state);
   return `<h1>Math Blast</h1>
   <input
       type="text"
       placeholder="Enter Name"
       id="player-name"
+      ${state.playerName ? `value = ${state.playerName}` : ''}
+      ${state.defaultName ? 'disabled' : ''}
     />
     <button id="join-button">Join</button>`;
 };
