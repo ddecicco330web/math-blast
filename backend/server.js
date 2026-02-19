@@ -85,6 +85,7 @@ io.on('connection', (socket) => {
   // Start Game
   socket.on('start game', (roomCode) => {
     startGame(roomCode);
+    console.log('send start game');
     io.to(roomCode).emit('game started');
   });
 

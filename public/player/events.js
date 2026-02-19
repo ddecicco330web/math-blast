@@ -68,7 +68,7 @@ export const setupSocketEvents = () => {
   });
 
   state.socket.on('game started', () => {
-    resetState();
+    console.log('game started');
     window.location.hash = '/game';
   });
 };

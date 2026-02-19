@@ -11,7 +11,8 @@ export const setupEventListeners = () => {
     }
 
     if (event.target.matches('#start-button')) {
-      state.socket.emit('start game', roomCode);
+      state.socket.emit('start game', state.roomCode);
+      console.log('start game');
     }
   });
 
