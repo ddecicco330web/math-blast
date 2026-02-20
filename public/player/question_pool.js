@@ -1,5 +1,7 @@
-const available = [];
-const used = [];
+import { updateState } from './util/state.js';
+
+let available = [];
+let used = [];
 
 for (let left = 0; left <= 12; left++) {
   for (let right = 0; right <= 12; right++) {
@@ -22,5 +24,5 @@ export const drawQuestion = () => {
 
   console.log(numberPair);
   used.push(numberPair);
-  return numberPair;
+  updateState({ currentPair: numberPair });
 };

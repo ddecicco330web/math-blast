@@ -1,5 +1,4 @@
 import { connectToRoom } from './events.js';
-import { drawQuestion } from './question_pool.js';
 import { state } from './util/state.js';
 
 export const getRoomCodePage = () => {
@@ -36,8 +35,7 @@ export const getLobbyPage = () => {
 };
 
 export const getGamePage = () => {
-  const numberPair = drawQuestion();
-  return ` <p id="starting-text">${numberPair[0]} * ${numberPair[1]}</p>
+  return ` <p id="starting-text">${state.currentPair[0]} * ${state.currentPair[1]}</p>
   <input type="number" id="answer-input"/>
     <button id="answer-button">Submit</button>`;
 };

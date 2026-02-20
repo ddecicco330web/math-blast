@@ -9,6 +9,7 @@ import {
   getNamePage,
   getRoomCodePage
 } from './pages.js';
+import { drawQuestion } from './question_pool.js';
 import { routes } from './util/router.js';
 import { initializeState } from './util/state.js';
 
@@ -25,8 +26,11 @@ initializeState({
   isLoading: false,
   roomCode: null,
   playerName: null,
-  defaultName: false
+  defaultName: false,
+  currentPair: []
 });
 
 setupEventListeners();
 setupSocketEvents();
+
+drawQuestion();
