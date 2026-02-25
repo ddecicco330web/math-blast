@@ -53,6 +53,7 @@ const updatePlayerName = (id, name, roomCode) => {
 
 export const addPlayer = (id, name, roomCode) => {
   const room = rooms.get(roomCode);
+  if (!room) return { error: 'Room not found' };
   if (room.players.size >= MAX_PLAYERS) return { error: 'Max players reached' };
   if (room.state !== 'waiting') return { error: 'Game already started' };
   room.players.set(id, { id: id, name: null, score: 0 });
@@ -62,12 +63,36 @@ export const addPlayer = (id, name, roomCode) => {
 };
 
 export const removePlayer = (id, roomCode) => {
-  console.log(roomCode);
   const room = rooms.get(roomCode);
-  console.log(room);
+  if (!room) return;
 
-  if (room.players.has(id)) room.names.delete(room.players.get(id).name);
-  console.log(rooms.get(roomCode));
+  if (room.players.has(id)) {
+    room.names.delete(room.players.get(id).name);
+    room.players.delete(id);
+  }
+};
+
+export const addScore = (id, roomCode, points = 1) => {
+  const room = rooms.get(roomCode);
+  if (!room) return;
+
+  const player = room.players.get(id);
+  if (!player) return;
+
+  player.score += points;
+};
+
+export const getLeaderboard = (roomCode) => {
+  const room = rooms.get(roomCode);
+  if (!room) return [];
+
+  return [...room.players.values()]
+    .map((player) => ({
+      id: player.id,
+      name: player.name,
+      score: player.score
+    }))
+    .sort((a, b) => b.score - a.score || a.name.localeCompare(b.name));
 };
 
 export const startGame = (roomCode) => {

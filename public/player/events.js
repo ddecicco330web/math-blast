@@ -30,6 +30,7 @@ export const setupEventListeners = () => {
         document.getElementById('answer-input').value
       ) {
         console.log('correct');
+        state.socket.emit('player scored');
         drawQuestion();
       } else console.log('wrong');
     }

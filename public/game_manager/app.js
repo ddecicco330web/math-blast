@@ -15,7 +15,7 @@ const initState = {
   socket: socket,
   isLoading: false,
   roomCode: null,
-  playerListMap: new Map()
+  leaderboard: []
 };
 
 updateState(initState);

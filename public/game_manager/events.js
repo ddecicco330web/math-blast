@@ -1,4 +1,4 @@
-import { renderContent, state, updateState } from './util/state.js';
+import { state, updateState } from './util/state.js';
 
 // Add event listeners
 export const setupEventListeners = () => {
@@ -13,6 +13,7 @@ export const setupEventListeners = () => {
     if (event.target.matches('#start-button')) {
       state.socket.emit('start game', state.roomCode);
       console.log('start game');
+      window.location.hash = '#/game';
     }
   });
 
@@ -34,15 +35,14 @@ export const setupSocketEvents = () => {
 
   state.socket.on('joined game', (player) => {
     console.log(`Host: Add player ${player}`);
+  });
 
-    state.playerListMap.set(player.id, `<li>${player.name}</li>`);
-    renderContent();
+  state.socket.on('leaderboard updated', (leaderboard) => {
+    updateState({ leaderboard: leaderboard });
   });
 
   state.socket.on('disconnected', (id) => {
     state.socket.emit('remove player', { id, roomCode: state.roomCode });
-    state.playerListMap.delete(id);
-    renderContent();
   });
 };
 

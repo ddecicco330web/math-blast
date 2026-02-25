@@ -2,9 +2,11 @@ import express from 'express';
 import { createServer } from 'node:http';
 import { Server } from 'socket.io';
 import {
+  addScore,
   addPlayer,
   createRoom,
   findRoom,
+  getLeaderboard,
   removePlayer,
   setDefaultNames,
   startGame
@@ -17,6 +19,11 @@ const server = createServer(app);
 const io = new Server(server);
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
+
+const emitLeaderboard = (roomCode) => {
+  if (!roomCode) return;
+  io.to(roomCode).emit('leaderboard updated', getLeaderboard(roomCode));
+};
 
 app.use(express.static('public'));
 app.use('/game', express.static(join(__dirname, '../public/game_manager')));
@@ -74,12 +81,20 @@ io.on('connection', (socket) => {
 
     socket.join(data.roomCode);
     io.to(data.roomCode).emit('joined game', response);
+    emitLeaderboard(data.roomCode);
   });
 
   // Remove Player
   socket.on('remove player', (data) => {
     console.log(data);
     removePlayer(data.id, data.roomCode);
+    emitLeaderboard(data.roomCode);
+  });
+
+  // Update Player Score
+  socket.on('player scored', () => {
+    addScore(socket.id, socket.roomId);
+    emitLeaderboard(socket.roomId);
   });
 
   // Start Game
@@ -98,6 +113,8 @@ io.on('connection', (socket) => {
   socket.on('disconnect', () => {
     console.log('User disconnected:', socket.id);
     io.to(socket.roomId).emit('disconnected', socket.id);
+    removePlayer(socket.id, socket.roomId);
+    emitLeaderboard(socket.roomId);
 
     if (socket.role === 'host') io.to(socket.roomId).emit('host disconnected');
   });
