@@ -1,5 +1,7 @@
 import { state, updateState } from './util/state.js';
 
+export let timer;
+
 // Add event listeners
 export const setupEventListeners = () => {
   // Listen for UI events
@@ -14,6 +16,9 @@ export const setupEventListeners = () => {
       state.socket.emit('start game', state.roomCode);
       console.log('start game');
       window.location.hash = '#/game';
+      timer = setInterval(() => {
+        updateState({ time: state.time - 1000 });
+      }, 1000); // call every second
     }
   });
 

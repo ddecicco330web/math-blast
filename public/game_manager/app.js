@@ -15,7 +15,8 @@ const initState = {
   socket: socket,
   isLoading: false,
   roomCode: null,
-  leaderboard: []
+  leaderboard: [],
+  time: 60000 // 1 minute
 };
 
 updateState(initState);

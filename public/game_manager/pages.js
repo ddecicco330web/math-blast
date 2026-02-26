@@ -1,3 +1,4 @@
+import { timer } from './events.js';
 import { state } from './util/state.js';
 
 // Define page content functions
@@ -22,10 +23,15 @@ export const getLobbyPage = () => {
 };
 
 export const getGamePage = () => {
+  if (state.time <= 0) {
+    clearInterval(timer);
+  }
+  const minutes = Math.floor(state.time / 60000);
+  const seconds = Math.floor((state.time % 60000) / 1000);
   const leaderboardList = state.leaderboard
     .map((player) => `<li>${player.name}: ${player.score}</li>`)
     .join('');
 
-  return `<p id="starting-text" >Game Started</p>
+  return `<p id="time" >${String(minutes).padStart(2, '0')} : ${String(seconds).padStart(2, '0')}</p>
     <ul id="player-list">${leaderboardList}</ul>`;
 };
