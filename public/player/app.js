@@ -4,11 +4,13 @@ import {
   setupSocketEvents
 } from './events.js';
 import {
+  getGameOverPage,
   getGamePage,
   getLobbyPage,
   getNamePage,
   getRoomCodePage
 } from './pages.js';
+import { drawQuestion } from './question_pool.js';
 import { routes } from './util/router.js';
 import { initializeState } from './util/state.js';
 
@@ -17,6 +19,7 @@ routes.set('#/', getRoomCodePage);
 routes.set('#/name', getNamePage);
 routes.set('#/lobby', getLobbyPage);
 routes.set('#/game', getGamePage);
+routes.set('#/gameover', getGameOverPage);
 
 const socket = io();
 // Set State
@@ -25,8 +28,11 @@ initializeState({
   isLoading: false,
   roomCode: null,
   playerName: null,
-  defaultName: false
+  defaultName: false,
+  currentPair: []
 });
 
 setupEventListeners();
 setupSocketEvents();
+
+drawQuestion();

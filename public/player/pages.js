@@ -35,5 +35,11 @@ export const getLobbyPage = () => {
 };
 
 export const getGamePage = () => {
-  return ` <p id="starting-text">Game Started</p>`;
+  return ` <p id="starting-text">${state.currentPair[0]} * ${state.currentPair[1]}</p>
+  <input type="number" id="answer-input"/>
+    <button id="answer-button">Submit</button>`;
+};
+
+export const getGameOverPage = () => {
+  return ` <p>Game Over</p>`;
 };

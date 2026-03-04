@@ -1,4 +1,5 @@
 import { generateName } from '../names.js';
+import { drawQuestion } from './question_pool.js';
 import { resetState, state, updateState } from './util/state.js';
 
 export const connectToRoom = (roomCode) => {
@@ -21,6 +22,18 @@ export const setupEventListeners = () => {
     if (event.target.matches('#connect-button'))
       connectToRoom(document.getElementById('room-code').value);
     if (event.target.matches('#join-button')) joinGame();
+    if (event.target.matches('#answer-button')) {
+      console.log(document.getElementById('answer-input').value);
+      console.log(state.currentPair[0] * state.currentPair[1]);
+      if (
+        state.currentPair[0] * state.currentPair[1] ==
+        document.getElementById('answer-input').value
+      ) {
+        console.log('correct');
+        state.socket.emit('player scored');
+        drawQuestion();
+      } else console.log('wrong');
+    }
   });
 };
 
@@ -68,7 +81,12 @@ export const setupSocketEvents = () => {
   });
 
   state.socket.on('game started', () => {
-    resetState();
+    console.log('game started');
+    drawQuestion();
     window.location.hash = '/game';
+  });
+
+  state.socket.on('game over', () => {
+    window.location.hash = '#/gameover';
   });
 };
