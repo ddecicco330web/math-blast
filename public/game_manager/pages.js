@@ -25,6 +25,8 @@ export const getLobbyPage = () => {
 export const getGamePage = () => {
   if (state.time <= 0) {
     clearInterval(timer);
+    state.socket.emit('game over', state.roomCode);
+    window.location.hash = '#/gameover';
   }
   const minutes = Math.floor(state.time / 60000);
   const seconds = Math.floor((state.time % 60000) / 1000);
@@ -33,5 +35,14 @@ export const getGamePage = () => {
     .join('');
 
   return `<p id="time" >${String(minutes).padStart(2, '0')} : ${String(seconds).padStart(2, '0')}</p>
+    <ul id="player-list">${leaderboardList}</ul>`;
+};
+
+export const getGameOverPage = () => {
+  const leaderboardList = state.leaderboard
+    .map((player) => `<li>${player.name}: ${player.score}</li>`)
+    .join('');
+
+  return `<p>Game Over</p>
     <ul id="player-list">${leaderboardList}</ul>`;
 };

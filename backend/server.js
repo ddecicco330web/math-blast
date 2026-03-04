@@ -109,6 +109,11 @@ io.on('connection', (socket) => {
     setDefaultNames(data.value, data.roomCode);
   });
 
+  // Game Over
+  socket.on('game over', (roomCode) => {
+    io.to(roomCode).emit('game over');
+  });
+
   // User Disconnects
   socket.on('disconnect', () => {
     console.log('User disconnected:', socket.id);

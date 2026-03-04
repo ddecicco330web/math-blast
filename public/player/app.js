@@ -4,6 +4,7 @@ import {
   setupSocketEvents
 } from './events.js';
 import {
+  getGameOverPage,
   getGamePage,
   getLobbyPage,
   getNamePage,
@@ -18,6 +19,7 @@ routes.set('#/', getRoomCodePage);
 routes.set('#/name', getNamePage);
 routes.set('#/lobby', getLobbyPage);
 routes.set('#/game', getGamePage);
+routes.set('#/gameover', getGameOverPage);
 
 const socket = io();
 // Set State

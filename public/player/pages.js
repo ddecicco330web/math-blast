@@ -39,3 +39,7 @@ export const getGamePage = () => {
   <input type="number" id="answer-input"/>
     <button id="answer-button">Submit</button>`;
 };
+
+export const getGameOverPage = () => {
+  return ` <p>Game Over</p>`;
+};

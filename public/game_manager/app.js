@@ -1,5 +1,10 @@
 import { setupEventListeners, setupSocketEvents } from './events.js';
-import { getGamePage, getHostPage, getLobbyPage } from './pages.js';
+import {
+  getGameOverPage,
+  getGamePage,
+  getHostPage,
+  getLobbyPage
+} from './pages.js';
 import { routes } from './util/router.js';
 import { updateState } from './util/state.js';
 
@@ -8,6 +13,7 @@ routes.set('#/', getHostPage);
 routes.set('#/host', getHostPage);
 routes.set('#/lobby', getLobbyPage);
 routes.set('#/game', getGamePage);
+routes.set('#/gameover', getGameOverPage);
 
 const socket = io();
 

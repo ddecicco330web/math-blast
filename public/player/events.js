@@ -85,4 +85,8 @@ export const setupSocketEvents = () => {
     drawQuestion();
     window.location.hash = '/game';
   });
+
+  state.socket.on('game over', () => {
+    window.location.hash = '#/gameover';
+  });
 };
