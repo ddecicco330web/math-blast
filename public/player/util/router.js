@@ -1,3 +1,8 @@
+import mount from '../vDOM/mount.js';
+import render from '../vDOM/render.js';
+import { renderContent } from './state.js';
+import createElement from '../vDOM/createElement.js';
+
 // Listen for navigation events
 window.addEventListener('hashchange', handleRoute);
 window.addEventListener('load', handleRoute);
@@ -8,9 +13,9 @@ export const routes = new Map();
 // Handle URL changes
 export function handleRoute() {
   const hash = window.location.hash || '#/';
-  console.log(hash);
-  const content = routes.get(hash)
-    ? routes.get(hash)()
-    : `<h1>Page Not Found</h1>`;
-  document.getElementById('app').innerHTML = content;
+  const root = document.getElementById('root');
+  routes.get(hash)
+    ? renderContent()
+    : mount(render(createElement('h1', { children: 'Page Not Found' })), root);
+  //document.getElementById('app').innerHTML = content;
 }
