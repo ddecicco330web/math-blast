@@ -92,8 +92,8 @@ io.on('connection', (socket) => {
   });
 
   // Update Player Score
-  socket.on('player scored', () => {
-    addScore(socket.id, socket.roomId);
+  socket.on('player scored', (points) => {
+    addScore(socket.id, socket.roomId, points);
     emitLeaderboard(socket.roomId);
   });
 

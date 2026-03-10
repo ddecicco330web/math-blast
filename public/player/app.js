@@ -11,6 +11,7 @@ import { initializeState } from './util/state.js';
 import createElement from './vDOM/createElement.js';
 
 export const QUESTION_TIME = 10000; // 10 seconds
+export const POINT_MULTIPLIER = 100;
 
 // Set Routes
 routes.set('#/', getRoomCodePage);

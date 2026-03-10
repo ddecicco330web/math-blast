@@ -1,4 +1,5 @@
 import { generateName } from '../names.js';
+import { POINT_MULTIPLIER } from './app.js';
 import { drawQuestion } from './question_pool.js';
 import { resetState, state, updateState } from './util/state.js';
 
@@ -16,7 +17,8 @@ const clickEvent = (event) => {
       document.getElementById('answer-input').value
     ) {
       console.log('correct');
-      state.socket.emit('player scored');
+      const seconds = Math.floor((state.questionTime % 60000) / 1000);
+      state.socket.emit('player scored', seconds * POINT_MULTIPLIER);
       drawQuestion();
     } else console.log('wrong');
   }
