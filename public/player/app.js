@@ -1,8 +1,4 @@
-import {
-  connectToRoom,
-  setupEventListeners,
-  setupSocketEvents
-} from './events.js';
+import { setupEventListeners, setupSocketEvents } from './events.js';
 import {
   getGameOverPage,
   getGamePage,
@@ -10,9 +6,12 @@ import {
   getNamePage,
   getRoomCodePage
 } from './pages.js';
-import { drawQuestion } from './question_pool.js';
 import { routes } from './util/router.js';
 import { initializeState } from './util/state.js';
+import createElement from './vDOM/createElement.js';
+
+export const QUESTION_TIME = 10000; // 10 seconds
+export const POINT_MULTIPLIER = 100;
 
 // Set Routes
 routes.set('#/', getRoomCodePage);
@@ -29,10 +28,10 @@ initializeState({
   roomCode: null,
   playerName: null,
   defaultName: false,
-  currentPair: []
+  currentPair: [],
+  questionTime: QUESTION_TIME,
+  textInput: ''
 });
 
 setupEventListeners();
 setupSocketEvents();
-
-drawQuestion();

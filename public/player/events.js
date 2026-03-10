@@ -1,6 +1,34 @@
 import { generateName } from '../names.js';
+import { POINT_MULTIPLIER } from './app.js';
 import { drawQuestion } from './question_pool.js';
 import { resetState, state, updateState } from './util/state.js';
+
+const app = document.getElementById('app');
+const clickEvent = (event) => {
+  console.log(event.target);
+  if (event.target.matches('#connect-button'))
+    connectToRoom(document.getElementById('room-code').value);
+  if (event.target.matches('#join-button')) joinGame();
+  if (event.target.matches('#answer-button')) {
+    console.log(document.getElementById('answer-input').value);
+    console.log(state.currentPair[0] * state.currentPair[1]);
+    if (
+      state.currentPair[0] * state.currentPair[1] ==
+      document.getElementById('answer-input').value
+    ) {
+      console.log('correct');
+      const seconds = Math.floor((state.questionTime % 60000) / 1000);
+      state.socket.emit('player scored', seconds * POINT_MULTIPLIER);
+      drawQuestion();
+    } else console.log('wrong');
+  }
+};
+
+const inputEvent = (event) => {
+  if (event.target.matches('#answer-input')) {
+    state.textInput = event.target.value;
+  }
+};
 
 export const connectToRoom = (roomCode) => {
   console.log(roomCode);
@@ -17,24 +45,15 @@ const joinGame = () => {
 };
 
 export const setupEventListeners = () => {
-  document.getElementById('app').addEventListener('click', (event) => {
-    console.log(event.target);
-    if (event.target.matches('#connect-button'))
-      connectToRoom(document.getElementById('room-code').value);
-    if (event.target.matches('#join-button')) joinGame();
-    if (event.target.matches('#answer-button')) {
-      console.log(document.getElementById('answer-input').value);
-      console.log(state.currentPair[0] * state.currentPair[1]);
-      if (
-        state.currentPair[0] * state.currentPair[1] ==
-        document.getElementById('answer-input').value
-      ) {
-        console.log('correct');
-        state.socket.emit('player scored');
-        drawQuestion();
-      } else console.log('wrong');
-    }
-  });
+  app.addEventListener('click', clickEvent);
+  app.addEventListener('input', inputEvent);
+};
+
+export const removeEventListeners = () => {
+  if (app) {
+    app.removeEventListener('click', clickEvent);
+    app.removeEventListener('input', inputEvent);
+  }
 };
 
 export const setupSocketEvents = () => {
