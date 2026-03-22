@@ -1,4 +1,5 @@
 import { connectToRoom } from './events.js';
+import { getBoard } from './board.js';
 import { drawQuestion } from './question_pool.js';
 import { state } from './util/state.js';
 import createElement from './vDOM/createElement.js';
@@ -79,32 +80,13 @@ export const getLobbyPage = () => {
 };
 
 export const getGamePage = () => {
-  if (state.questionTime <= 0 || !state.currentPair) drawQuestion();
+  //if (state.questionTime <= 0 || !state.currentPair) drawQuestion();
 
-  const seconds = Math.floor((state.questionTime % 60000) / 1000);
+  //const seconds = Math.floor((state.questionTime % 60000) / 1000);
 
   return createElement('div', {
     attrs: { id: 'root' },
-    children: [
-      createElement('p', {
-        children: [`${String(seconds).padStart(2, '0')}`]
-      }),
-      createElement('p', {
-        attrs: { id: 'starting-text' },
-        children: [`${state.currentPair[0]} * ${state.currentPair[1]}`]
-      }),
-      createElement('input', {
-        attrs: {
-          type: 'number',
-          id: 'answer-input',
-          value: state.textInput || ''
-        }
-      }),
-      createElement('button', {
-        attrs: { id: 'answer-button' },
-        children: ['Submit']
-      })
-    ]
+    children: [getBoard()]
   });
 
   // return `<p>${String(seconds).padStart(2, '0')}</p>

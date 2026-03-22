@@ -1,3 +1,71 @@
 .hidden {
   display: none;
 }
+
+.board-shell {
+  width: fit-content;
+  margin: 32px auto 0;
+  padding: 18px;
+  border: 4px solid #90a4ae;
+  border-radius: 14px;
+  background: linear-gradient(180deg, #455a64 0%, #263238 100%);
+  box-shadow:
+    0 0 0 4px #1b2328,
+    0 18px 40px rgba(0, 0, 0, 0.35);
+}
+
+.game-board {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 8px;
+  border: 3px solid #11181d;
+  border-radius: 6px;
+  background: linear-gradient(180deg, #0f1720 0%, #111b25 100%);
+  box-shadow:
+    inset 0 0 0 2px rgba(255, 255, 255, 0.05),
+    inset 0 10px 20px rgba(255, 255, 255, 0.04);
+}
+
+.board-row {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.equation-group {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.board-operator {
+  width: 24px;
+  color: #e8f1f8;
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1;
+  text-align: center;
+  text-shadow: 0 2px 0 rgba(0, 0, 0, 0.35);
+}
+
+.board-slot {
+  position: relative;
+  overflow: hidden;
+  width: 32px;
+  aspect-ratio: 1 / 1;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, transparent 45%),
+    linear-gradient(180deg, #1f2c38 0%, #14202a 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.35);
+}
+
+.board-slot::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 0%, rgba(0, 0, 0, 0.12) 100%);
+}
