@@ -1,7 +1,7 @@
 import { connectToRoom } from './events.js';
-import { drawQuestion } from './question_pool.js';
 import { state } from './util/state.js';
 import createElement from './vDOM/createElement.js';
+import { getFactorBlock, getSolutionBlock } from './block.js';
 
 export const getRoomCodePage = () => {
   if (!state.roomCode) {
@@ -79,32 +79,13 @@ export const getLobbyPage = () => {
 };
 
 export const getGamePage = () => {
-  if (state.questionTime <= 0 || !state.currentPair) drawQuestion();
+  //if (state.questionTime <= 0 || !state.currentPair) drawQuestion();
 
-  const seconds = Math.floor((state.questionTime % 60000) / 1000);
+  //const seconds = Math.floor((state.questionTime % 60000) / 1000);
 
   return createElement('div', {
     attrs: { id: 'root' },
-    children: [
-      createElement('p', {
-        children: [`${String(seconds).padStart(2, '0')}`]
-      }),
-      createElement('p', {
-        attrs: { id: 'starting-text' },
-        children: [`${state.currentPair[0]} * ${state.currentPair[1]}`]
-      }),
-      createElement('input', {
-        attrs: {
-          type: 'number',
-          id: 'answer-input',
-          value: state.textInput || ''
-        }
-      }),
-      createElement('button', {
-        attrs: { id: 'answer-button' },
-        children: ['Submit']
-      })
-    ]
+    children: [state.board, getFactorBlock(6), getSolutionBlock(6, 7)]
   });
 
   // return `<p>${String(seconds).padStart(2, '0')}</p>

@@ -1,3 +1,4 @@
+import { getBoard } from './board.js';
 import { setupEventListeners, setupSocketEvents } from './events.js';
 import {
   getGameOverPage,
@@ -30,7 +31,8 @@ initializeState({
   defaultName: false,
   currentPair: [],
   questionTime: QUESTION_TIME,
-  textInput: ''
+  textInput: '',
+  board: getBoard()
 });
 
 setupEventListeners();
