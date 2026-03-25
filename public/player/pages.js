@@ -1,8 +1,7 @@
 import { connectToRoom } from './events.js';
-import { getBoard } from './board.js';
-import { drawQuestion } from './question_pool.js';
 import { state } from './util/state.js';
 import createElement from './vDOM/createElement.js';
+import { getFactorBlock, getSolutionBlock } from './block.js';
 
 export const getRoomCodePage = () => {
   if (!state.roomCode) {
@@ -86,7 +85,7 @@ export const getGamePage = () => {
 
   return createElement('div', {
     attrs: { id: 'root' },
-    children: [getBoard()]
+    children: [state.board, getFactorBlock(6), getSolutionBlock(6, 7)]
   });
 
   // return `<p>${String(seconds).padStart(2, '0')}</p>

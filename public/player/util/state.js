@@ -29,15 +29,15 @@ export const updateState = (changes) => {
 export const renderContent = () => {
   const view = routes.get(window.location.hash || '#/')();
   const root = document.getElementById('root');
-  console.log(`view for ${window.location.hash}`, view);
-  console.log('rootNode', rootNode);
+  //console.log(`view for ${window.location.hash}`, view);
+  //console.log('rootNode', rootNode);
   if (!rootNode) {
     rootNode = render(view);
     rootNode = mount(rootNode, root);
-    console.log('Root node after mount', rootNode);
+    //console.log('Root node after mount', rootNode);
   } else {
-    console.log('view', view);
-    console.log('old', oldTree);
+    //console.log('view', view);
+    //console.log('old', oldTree);
     const patch = diff(view, oldTree);
     rootNode = patch(rootNode);
   }
@@ -47,5 +47,5 @@ export const renderContent = () => {
   // }
   // appDiv.innerHTML = routes.get(window.location.hash || '#/')();
   oldTree = view;
-  console.log(view);
+  //console.log(view);
 };

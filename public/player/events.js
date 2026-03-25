@@ -1,10 +1,12 @@
 import { generateName } from '../names.js';
 import { POINT_MULTIPLIER } from './app.js';
+import { generateRow } from './board.js';
 import { drawQuestion } from './question_pool.js';
 import { resetState, state, updateState } from './util/state.js';
 
 const app = document.getElementById('app');
 const clickEvent = (event) => {
+  generateRow();
   console.log(event.target);
   if (event.target.matches('#connect-button'))
     connectToRoom(document.getElementById('room-code').value);

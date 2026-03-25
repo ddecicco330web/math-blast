@@ -1,5 +1,5 @@
 const renderElem = (vNode) => {
-  console.log(vNode);
+  //console.log(vNode);
   const $el = document.createElement(vNode.tagName);
 
   // Set attributes to element

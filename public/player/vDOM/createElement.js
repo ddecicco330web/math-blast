@@ -7,6 +7,6 @@ export default (tagName, { attrs, children }) => {
     children
   });
 
-  console.log(vElem);
+  //console.log(vElem);
   return vElem;
 };

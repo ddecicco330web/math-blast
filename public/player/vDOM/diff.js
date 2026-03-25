@@ -7,7 +7,7 @@ const diffAttrs = (oldAttrs, newAttrs) => {
   if (newAttrs) {
     for (const [key, value] of Object.entries(newAttrs)) {
       patches.push(($node) => {
-        console.log('attr patch set', key, value);
+        //console.log('attr patch set', key, value);
         if (key === 'value' && 'value' in $node) {
           $node.value = value ?? '';
         } else {
@@ -23,7 +23,7 @@ const diffAttrs = (oldAttrs, newAttrs) => {
     for (const key in oldAttrs) {
       if (!newAttrs || !(key in newAttrs)) {
         patches.push(($node) => {
-          console.log('attr patch remove', key);
+          //console.log('attr patch remove', key);
           if (key === 'value' && 'value' in $node) $node.value = '';
           $node.removeAttribute(key);
           return $node;
@@ -44,7 +44,7 @@ const diffChildren = (oldVChildren, newVChildren) => {
   const childPatches = [];
   if (oldVChildren) {
     oldVChildren.forEach((oldVChild, i) => {
-      console.log('child patch push', newVChildren[i]);
+      //console.log('child patch push', newVChildren[i]);
       childPatches.push(diff(newVChildren[i], oldVChild));
     });
   }
@@ -53,7 +53,7 @@ const diffChildren = (oldVChildren, newVChildren) => {
   if (newVChildren) {
     for (const additionalVChild of newVChildren.slice(oldVChildren.length)) {
       additionalPatches.push(($node) => {
-        console.log('child patch append', additionalVChild);
+        //console.log('child patch append', additionalVChild);
         $node.appendChild(render(additionalVChild));
       });
     }
@@ -78,8 +78,8 @@ const diffChildren = (oldVChildren, newVChildren) => {
 };
 
 const diff = (newVTree, oldVTree) => {
-  console.log('oldV', oldVTree);
-  console.log('newV', newVTree);
+  //console.log('oldV', oldVTree);
+  //console.log('newV', newVTree);
   if (newVTree === undefined || newVTree === null) {
     return ($node) => {
       $node.remove();
