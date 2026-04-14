@@ -9,6 +9,23 @@ const OPERATORS = ['x', '='];
 const LEFT_NUM_INDEX = 0;
 const RIGHT_NUM_INDEX = 2;
 const SOLUTION_INDEX = 4;
+const QUESTION_PARTS = [
+  {
+    blankValue: 0,
+    childIndex: LEFT_NUM_INDEX,
+    getBlock: ({ left }) => getFactorBlock(left)
+  },
+  {
+    blankValue: 1,
+    childIndex: RIGHT_NUM_INDEX,
+    getBlock: ({ right }) => getFactorBlock(right)
+  },
+  {
+    blankValue: 2,
+    childIndex: SOLUTION_INDEX,
+    getBlock: ({ left, right }) => getSolutionBlock(left, right)
+  }
+];
 
 const getGroup = (groupIndex, rowIndex) => {
   // Each group renders one equation segment: slot, operator, slot, operator, slot.
@@ -99,21 +116,16 @@ export const generateRow = () => {
 
 const populateRow = (row) => {
   row.forEach((group) => {
-    const left = Math.floor(Math.random() * 13);
-    const right = Math.floor(Math.random() * 13);
+    const question = {
+      left: Math.floor(Math.random() * 13),
+      right: Math.floor(Math.random() * 13),
+      blank: Math.floor(Math.random() * QUESTION_PARTS.length)
+    };
 
-    const blank = Math.floor(Math.random() * 3);
-
-    if (blank != 0)
-      group.children[LEFT_NUM_INDEX].children.push(getFactorBlock(left));
-
-    if (blank != 1)
-      group.children[RIGHT_NUM_INDEX].children.push(getFactorBlock(right));
-
-    if (blank != 2)
-      group.children[SOLUTION_INDEX].children.push(
-        getSolutionBlock(left, right)
-      );
+    QUESTION_PARTS.forEach(({ blankValue, childIndex, getBlock }) => {
+      if (question.blank === blankValue) return;
+      group.children[childIndex].children.push(getBlock(question));
+    });
   });
 
   return row;

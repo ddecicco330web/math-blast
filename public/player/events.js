@@ -1,7 +1,6 @@
 import { generateName } from '../names.js';
 import { POINT_MULTIPLIER } from './app.js';
 import { generateRow } from './board.js';
-import { drawQuestion } from './question_pool.js';
 import { resetState, state, updateState } from './util/state.js';
 
 const app = document.getElementById('app');
@@ -21,7 +20,7 @@ const clickEvent = (event) => {
       console.log('correct');
       const seconds = Math.floor((state.questionTime % 60000) / 1000);
       state.socket.emit('player scored', seconds * POINT_MULTIPLIER);
-      drawQuestion();
+      //drawQuestion();
     } else console.log('wrong');
   }
 };
@@ -103,7 +102,7 @@ export const setupSocketEvents = () => {
 
   state.socket.on('game started', () => {
     console.log('game started');
-    drawQuestion();
+    //drawQuestion();
     window.location.hash = '/game';
   });
 
