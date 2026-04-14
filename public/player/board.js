@@ -6,6 +6,9 @@ const BOARD_WIDTH = 9;
 const BOARD_HEIGHT = 3;
 const EQUATION_WIDTH = 3;
 const OPERATORS = ['x', '='];
+const LEFT_NUM_INDEX = 0;
+const RIGHT_NUM_INDEX = 2;
+const SOLUTION_INDEX = 4;
 
 const getGroup = (groupIndex, rowIndex) => {
   // Each group renders one equation segment: slot, operator, slot, operator, slot.
@@ -80,23 +83,38 @@ export const getBoard = () => {
 
 export const generateRow = () => {
   const newBoard = getBoard();
-  // `newBoard.children[0]` is the `.game-board` container whose children are the rows.
-  newBoard.children[0].children.push(
-    createElement('div', {
-      attrs: {
-        class: 'board-row',
-        'data-row': String(3)
-      },
-      children: populateRow(getRow(3))
-    })
-  );
+  const bottomRowIndex = BOARD_HEIGHT - 1;
+
+  // Replace the last row in-place so the board keeps its fixed height.
+  newBoard.children[0].children[bottomRowIndex] = createElement('div', {
+    attrs: {
+      class: 'board-row',
+      'data-row': String(bottomRowIndex)
+    },
+    children: populateRow(getRow(bottomRowIndex))
+  });
+
   updateState({ board: newBoard });
 };
 
 const populateRow = (row) => {
-  // `row` is an array of equation-group vnodes. These indexes reach into the
-  // first group's slot children to place blocks in specific board positions.
-  row[0].children[0].children.push(getFactorBlock(6));
-  row[0].children[4].children.push(getSolutionBlock(6, 7));
+  row.forEach((group) => {
+    const left = Math.floor(Math.random() * 13);
+    const right = Math.floor(Math.random() * 13);
+
+    const blank = Math.floor(Math.random() * 3);
+
+    if (blank != 0)
+      group.children[LEFT_NUM_INDEX].children.push(getFactorBlock(left));
+
+    if (blank != 1)
+      group.children[RIGHT_NUM_INDEX].children.push(getFactorBlock(right));
+
+    if (blank != 2)
+      group.children[SOLUTION_INDEX].children.push(
+        getSolutionBlock(left, right)
+      );
+  });
+
   return row;
 };
