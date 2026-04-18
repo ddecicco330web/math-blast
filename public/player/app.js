@@ -21,6 +21,7 @@ routes.set('#/game', getGamePage);
 routes.set('#/gameover', getGameOverPage);
 
 const socket = io();
+const { board, answerList } = generateBoard();
 // Set State
 initializeState({
   socket: socket,
@@ -31,7 +32,12 @@ initializeState({
   currentPair: [],
   questionTime: QUESTION_TIME,
   textInput: '',
-  board: generateBoard()
+  answerList: answerList,
+  currentAnswer: answerList.pop(),
+  draggedAnswer: null,
+  dragPosition: null,
+  dragOffset: null,
+  board: board
 });
 
 setupEventListeners();
