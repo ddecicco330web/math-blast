@@ -1,4 +1,4 @@
-import { getBoard } from './board.js';
+import { generateBoard } from './board.js';
 import { setupEventListeners, setupSocketEvents } from './events.js';
 import {
   getGameOverPage,
@@ -9,7 +9,6 @@ import {
 } from './pages.js';
 import { routes } from './util/router.js';
 import { initializeState } from './util/state.js';
-import createElement from './vDOM/createElement.js';
 
 export const QUESTION_TIME = 10000; // 10 seconds
 export const POINT_MULTIPLIER = 100;
@@ -32,7 +31,7 @@ initializeState({
   currentPair: [],
   questionTime: QUESTION_TIME,
   textInput: '',
-  board: getBoard()
+  board: generateBoard()
 });
 
 setupEventListeners();

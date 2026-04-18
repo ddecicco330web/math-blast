@@ -5,7 +5,6 @@ import { resetState, state, updateState } from './util/state.js';
 
 const app = document.getElementById('app');
 const clickEvent = (event) => {
-  generateRow();
   console.log(event.target);
   if (event.target.matches('#connect-button'))
     connectToRoom(document.getElementById('room-code').value);

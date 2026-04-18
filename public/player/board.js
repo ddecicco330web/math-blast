@@ -2,13 +2,16 @@ import { getFactorBlock, getSolutionBlock } from './block.js';
 import { updateState } from './util/state.js';
 import createElement from './vDOM/createElement.js';
 
-const BOARD_WIDTH = 9;
-const BOARD_HEIGHT = 3;
+const BOARD_WIDTH = 12;
+const BOARD_HEIGHT = 5;
 const EQUATION_WIDTH = 3;
 const OPERATORS = ['x', '='];
 const LEFT_NUM_INDEX = 0;
 const RIGHT_NUM_INDEX = 2;
 const SOLUTION_INDEX = 4;
+const NUM_ROWS_TO_POPULATE = 3;
+// These metadata entries describe the three fillable parts of `a x b = c`.
+// `childIndex` points at the slot inside a rendered group; operators sit between slots.
 const QUESTION_PARTS = [
   {
     blankValue: 0,
@@ -31,6 +34,8 @@ const getGroup = (groupIndex, rowIndex) => {
   // Each group renders one equation segment: slot, operator, slot, operator, slot.
   return Array.from({ length: EQUATION_WIDTH }, (_, slotIndex) => {
     const columnIndex = groupIndex * EQUATION_WIDTH + slotIndex;
+    // Slots are addressed on the whole board, not just within a row/group.
+    // That lets drag/drop and events refer to one flat index everywhere else.
     const boardIndex = rowIndex * BOARD_WIDTH + columnIndex;
     const parts = [
       createElement('div', {
@@ -98,11 +103,29 @@ export const getBoard = () => {
   });
 };
 
+export const generateBoard = () => {
+  const board = getBoard();
+
+  // Populate bottom rows with questions
+  for (let i = 1; i <= NUM_ROWS_TO_POPULATE; i++) {
+    board.children[0].children[BOARD_HEIGHT - i] = createElement('div', {
+      attrs: {
+        class: 'board-row',
+        'data-row': String(BOARD_HEIGHT - i)
+      },
+      children: populateRow(getRow(BOARD_HEIGHT - i))
+    });
+  }
+
+  return board;
+};
+
 export const generateRow = () => {
   const newBoard = getBoard();
   const bottomRowIndex = BOARD_HEIGHT - 1;
 
   // Replace the last row in-place so the board keeps its fixed height.
+  // Only the bottom row gets numbers; the rows above stay empty scaffolding for now.
   newBoard.children[0].children[bottomRowIndex] = createElement('div', {
     attrs: {
       class: 'board-row',
@@ -116,6 +139,7 @@ export const generateRow = () => {
 
 const populateRow = (row) => {
   row.forEach((group) => {
+    // Each group becomes one multiplication prompt with one missing piece.
     const question = {
       left: Math.floor(Math.random() * 13),
       right: Math.floor(Math.random() * 13),
@@ -123,6 +147,7 @@ const populateRow = (row) => {
     };
 
     QUESTION_PARTS.forEach(({ blankValue, childIndex, getBlock }) => {
+      // Skip the chosen blank so that slot stays empty for the player to solve.
       if (question.blank === blankValue) return;
       group.children[childIndex].children.push(getBlock(question));
     });
