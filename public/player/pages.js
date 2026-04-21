@@ -1,7 +1,6 @@
 import { connectToRoom } from './events.js';
 import { state } from './util/state.js';
 import createElement from './vDOM/createElement.js';
-import { getFactorBlock, getSolutionBlock } from './block.js';
 
 export const getRoomCodePage = () => {
   if (!state.roomCode) {
@@ -78,14 +77,56 @@ export const getLobbyPage = () => {
   //return `<p id="waiting-text">Waiting for host...</p>`;
 };
 
+const getGameMainPanel = () => {
+  const dragStyle =
+    state.draggedAnswer && state.dragPosition
+      ? `position: fixed; left: ${state.dragPosition.left}px; top: ${state.dragPosition.top}px; width: ${state.dragPosition.width}px; height: ${state.dragPosition.height}px; z-index: 1000; pointer-events: none;`
+      : '';
+
+  return createElement('section', {
+    attrs: { class: 'game-main-panel' },
+    children: [
+      createElement('div', {
+        attrs: { class: 'current-answer-slot' },
+        children: state.currentAnswer
+          ? [
+              createElement('div', {
+                attrs: {
+                  class: `current-answer-dragger${state.draggedAnswer ? ' is-dragging' : ''}`,
+                  'data-current-answer': 'true',
+                  style: dragStyle
+                },
+                children: [state.currentAnswer]
+              })
+            ]
+          : [
+              createElement('p', {
+                attrs: { class: 'answer-panel-empty' },
+                children: ['No answer ready.']
+              })
+            ]
+      }),
+      createElement('div', {
+        attrs: { class: 'game-board-column' },
+        children: [state.board]
+      })
+    ]
+  });
+};
+
 export const getGamePage = () => {
   //if (state.questionTime <= 0 || !state.currentPair) drawQuestion();
 
   //const seconds = Math.floor((state.questionTime % 60000) / 1000);
 
   return createElement('div', {
-    attrs: { id: 'root' },
-    children: [state.board, getFactorBlock(6), getSolutionBlock(6, 7)]
+    attrs: { id: 'root', class: 'game-page' },
+    children: [
+      createElement('div', {
+        attrs: { class: 'game-layout' },
+        children: [getGameMainPanel()]
+      })
+    ]
   });
 
   // return `<p>${String(seconds).padStart(2, '0')}</p>

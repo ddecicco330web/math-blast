@@ -1,12 +1,9 @@
 import { generateName } from '../names.js';
 import { POINT_MULTIPLIER } from './app.js';
-import { generateRow } from './board.js';
-import { drawQuestion } from './question_pool.js';
 import { resetState, state, updateState } from './util/state.js';
 
 const app = document.getElementById('app');
 const clickEvent = (event) => {
-  generateRow();
   console.log(event.target);
   if (event.target.matches('#connect-button'))
     connectToRoom(document.getElementById('room-code').value);
@@ -21,7 +18,7 @@ const clickEvent = (event) => {
       console.log('correct');
       const seconds = Math.floor((state.questionTime % 60000) / 1000);
       state.socket.emit('player scored', seconds * POINT_MULTIPLIER);
-      drawQuestion();
+      //drawQuestion();
     } else console.log('wrong');
   }
 };
@@ -30,6 +27,52 @@ const inputEvent = (event) => {
   if (event.target.matches('#answer-input')) {
     state.textInput = event.target.value;
   }
+};
+
+const mouseDownEvent = (event) => {
+  if (!event.target.closest('[data-current-answer="true"]')) return;
+
+  const dragger = event.target.closest('[data-current-answer="true"]');
+  const rect = dragger.getBoundingClientRect();
+
+  state.dragOffset = {
+    x: event.clientX - rect.left,
+    y: event.clientY - rect.top
+  };
+
+  event.preventDefault();
+
+  updateState({
+    draggedAnswer: state.currentAnswer,
+    dragPosition: {
+      left: rect.left,
+      top: rect.top,
+      width: rect.width,
+      height: rect.height
+    }
+  });
+};
+
+const mouseMoveEvent = (event) => {
+  if (!state.draggedAnswer || !state.dragOffset || !state.dragPosition) return;
+
+  updateState({
+    dragPosition: {
+      ...state.dragPosition,
+      left: event.clientX - state.dragOffset.x,
+      top: event.clientY - state.dragOffset.y
+    }
+  });
+};
+
+const mouseUpEvent = () => {
+  if (!state.draggedAnswer) return;
+
+  state.dragOffset = null;
+  updateState({
+    draggedAnswer: null,
+    dragPosition: null
+  });
 };
 
 export const connectToRoom = (roomCode) => {
@@ -49,12 +92,18 @@ const joinGame = () => {
 export const setupEventListeners = () => {
   app.addEventListener('click', clickEvent);
   app.addEventListener('input', inputEvent);
+  app.addEventListener('mousedown', mouseDownEvent);
+  window.addEventListener('mousemove', mouseMoveEvent);
+  window.addEventListener('mouseup', mouseUpEvent);
 };
 
 export const removeEventListeners = () => {
   if (app) {
     app.removeEventListener('click', clickEvent);
     app.removeEventListener('input', inputEvent);
+    app.removeEventListener('mousedown', mouseDownEvent);
+    window.removeEventListener('mousemove', mouseMoveEvent);
+    window.removeEventListener('mouseup', mouseUpEvent);
   }
 };
 
@@ -103,7 +152,7 @@ export const setupSocketEvents = () => {
 
   state.socket.on('game started', () => {
     console.log('game started');
-    drawQuestion();
+    //drawQuestion();
     window.location.hash = '/game';
   });
 
